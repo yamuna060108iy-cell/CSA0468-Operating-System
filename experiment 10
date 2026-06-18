@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <string.h>
+
+struct message
+{
+    long msg_type;
+    char msg_text[100];
+};
+
+int main()
+{
+    key_t key;
+    int msgid;
+    struct message msg;
+
+    key = ftok(".", 'A');
+
+    msgid = msgget(key, IPC_CREAT | 0666);
+
+    if (msgid == -1)
+    {
+        printf("Error creating message queue\n");
+        return 1;
+    }
+
+    msg.msg_type = 1;
+
+    printf("Enter message: ");
+    fgets(msg.msg_text, sizeof(msg.msg_text), stdin);
+
+    msgsnd(msgid, &msg, sizeof(msg.msg_text), 0);
+
+    printf("Message sent successfully\n");
+
+    msgrcv(msgid, &msg, sizeof(msg.msg_text), 1, 0);
+
+    printf("Received Message: %s\n", msg.msg_text);
+
+    msgctl(msgid, IPC_RMID, NULL);
+
+    return 0;
+}
