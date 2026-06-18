@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void createFile()
+{
+    FILE *fp = fopen("sample.txt", "w");
+
+    if (fp == NULL)
+    {
+        printf("File cannot be created\n");
+        return;
+    }
+
+    printf("File created successfully\n");
+    fclose(fp);
+}
+
+void copyFile()
+{
+    FILE *source, *dest;
+    char ch;
+
+    source = fopen("sample.txt", "r");
+
+    if (source == NULL)
+    {
+        printf("Source file not found\n");
+        return;
+    }
+
+    dest = fopen("copy.txt", "w");
+
+    while ((ch = fgetc(source)) != EOF)
+    {
+        fputc(ch, dest);
+    }
+
+    printf("File copied successfully\n");
+
+    fclose(source);
+    fclose(dest);
+}
+
+void deleteFile()
+{
+    if (remove("sample.txt") == 0)
+        printf("File deleted successfully\n");
+    else
+        printf("Unable to delete file\n");
+}
+
+int main()
+{
+    int choice;
+
+    do
+    {
+        printf("\n1. Create File");
+        printf("\n2. Copy File");
+        printf("\n3. Delete File");
+        printf("\n4. Exit");
+        printf("\nEnter choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1:
+                createFile();
+                break;
+
+            case 2:
+                copyFile();
+                break;
+
+            case 3:
+                deleteFile();
+                break;
+
+            case 4:
+                printf("Exiting...\n");
+                break;
+
+            default:
+                printf("Invalid Choice\n");
+        }
+
+    } while (choice != 4);
+
+    return 0;
+}
